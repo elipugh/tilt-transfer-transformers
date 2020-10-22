@@ -18,7 +18,7 @@ import numpy as np
 import torch
 from hydra.core.config_store import ConfigStore
 
-from fairseq import (
+from fairseq.fairseq import (
     checkpoint_utils,
     distributed_utils,
     options,
@@ -26,14 +26,14 @@ from fairseq import (
     tasks,
     utils,
 )
-from fairseq.data import iterators
-from fairseq.dataclass.utils import convert_namespace_to_omegaconf
-from fairseq.logging import meters, metrics, progress_bar
-from fairseq.model_parallel.megatron_trainer import MegatronTrainer
+from fairseq.fairseq.data import iterators
+from fairseq.fairseq.dataclass.utils import convert_namespace_to_omegaconf
+from fairseq.fairseq.logging import meters, metrics, progress_bar
+from fairseq.fairseq.model_parallel.megatron_trainer import MegatronTrainer
 from omegaconf import DictConfig
 from hydra.experimental import initialize
-from fairseq.dataclass.data_class import register_hydra_cfg
-from fairseq.trainer import Trainer
+from fairseq.fairseq.dataclass.data_class import register_hydra_cfg
+from fairseq.fairseq.trainer import Trainer
 
 
 logging.basicConfig(

@@ -72,26 +72,12 @@ parser.add_argument('--dropouth', type=float, default=0.3,
                     help='dropout for rnn layers (0 = no dropout)')
 parser.add_argument('--dropouti', type=float, default=0.65,
                     help='dropout for input embedding layers (0 = no dropout)')
-parser.add_argument('--dropoute', type=float, default=0.1,
-                    help='dropout to remove words from embedding layer (0 = no dropout)')
-parser.add_argument('--wdrop', type=float, default=0.5,
-                    help='amount of weight dropout to apply to the RNN hidden to hidden matrix')
-parser.add_argument('--nonmono', type=int, default=5,
-                    help='random seed')
 parser.add_argument('--cuda', action='store_false',
                     help='use CUDA')
-parser.add_argument('--alpha', type=float, default=2,
-                    help='alpha L2 regularization on RNN activation (alpha = 0 means no regularization)')
-parser.add_argument('--beta', type=float, default=1,
-                    help='beta slowness regularization applied on RNN activiation (beta = 0 means no regularization)')
-parser.add_argument('--wdecay', type=float, default=1.2e-6,
-                    help='weight decay applied to all weights')
 parser.add_argument('--resume', type=str,  default='',
                     help='path of model to resume')
 parser.add_argument('--optimizer', type=str,  default='sgd',
                     help='optimizer to use (sgd, adam)')
-parser.add_argument('--when', nargs="+", type=int, default=[-1],
-                    help='When (which epochs) to divide the learning rate by 10 - accepts multiple')
 args = parser.parse_args()
 args.tied = True
 #############
