@@ -105,7 +105,7 @@ def main(args):
 
         consumer(data)
 
-        ds.finalize(dataset_dest_file(args, output_prefix, "",'idx'))
+        ds.finalize(dataset_dest_file(args, output_prefix, 'idx'))
 
         #####################
 
