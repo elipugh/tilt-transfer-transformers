@@ -23,6 +23,8 @@ from fairseq.data import indexed_dataset
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+print(parentdir)
+print(sys.path)
 from corpora.data import *
 import torch
 
