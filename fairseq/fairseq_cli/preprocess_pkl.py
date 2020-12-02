@@ -65,7 +65,7 @@ def main(args):
 
     logger.addHandler(
         logging.FileHandler(
-            filename=os.path.join(args.destdir, "preprocess_pkl.log"),
+            filename=os.path.join(args.dir, "preprocess_pkl.log"),
         )
     )
     logger.info(args)
