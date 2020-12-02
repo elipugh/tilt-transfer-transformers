@@ -21,10 +21,8 @@ from fairseq.binarizer import Binarizer
 from fairseq.data import indexed_dataset
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
+parentdir = os.path.normpath(os.path.join(currentdir, os.pardir))
 sys.path.insert(0, parentdir)
-print(parentdir)
-print(sys.path)
 from corpora.data import *
 import torch
 
