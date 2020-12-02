@@ -88,12 +88,14 @@ def main(args):
         return dest_path("dict", lang) + ".txt"
 
     def build_dictionary(corpus):
-
-        print(corpus.dictionary.idx2word[:5])
-
         d = fDictionary()
-
-        return t
+        d.symbols = corpus.dictionary.idx2word
+        d.count = [0 for _ in range(corpus.dictionary.total)]
+        for k,v in corpus.dictionary.counters.items():
+            d.count[k] = v
+        d.indices = corpus.dictionary.word2idx
+        d.finalize()
+        return d
 
     corpus = torch.load(args.corpus)
     src_dict = build_dictionary(corpus)
