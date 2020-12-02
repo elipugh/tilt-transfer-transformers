@@ -55,6 +55,7 @@ def get_parser():
         type=int,
         help="workers",
     )
+    return parser
 
 
 def main(args):
