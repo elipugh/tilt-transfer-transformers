@@ -86,13 +86,8 @@ def main(args):
 
     def make_binary_dataset(vocab, data, output_prefix):
         logger.info("Dictionary: {} types".format(len(vocab)))
-        n_seq_tok = [0, 0]
         replaced = Counter()
 
-        def merge_result(worker_result):
-            replaced.update(worker_result["replaced"])
-            n_seq_tok[0] += worker_result["nseq"]
-            n_seq_tok[1] += worker_result["ntok"]
 
         ds = indexed_dataset.IndexedDatasetBuilder(
             dataset_dest_file(args, output_prefix, "bin"),
@@ -107,25 +102,6 @@ def main(args):
 
         ds.finalize(dataset_dest_file(args, output_prefix, 'idx'))
 
-        #####################
-
-        # merge_result(
-        #     Binarizer.binarize(
-        #         input_file, vocab, lambda t: ds.add_item(t)
-        #     )
-        # )
-
-        # ds.finalize(dataset_dest_file(args, output_prefix, "idx"))
-
-        # logger.info(
-        #     "{}: {} sents, {} tokens, {:.3}% replaced by {}".format(
-        #         input_file,
-        #         n_seq_tok[0],
-        #         n_seq_tok[1],
-        #         100 * sum(replaced.values()) / n_seq_tok[1],
-        #         vocab.unk_word,
-        #     )
-        # )
 
     def make_all(vocab, corpus):
         make_binary_dataset(vocab, corpus.train, "train")
@@ -133,7 +109,7 @@ def main(args):
         make_binary_dataset(vocab, corpus.test, "test")
 
     make_all(src_dict, corpus)
-    logger.info("Wrote preprocessed data to {}".format(args.destdir))
+    logger.info("Wrote preprocessed data to {}".format(args.dir))
 
 
 def dataset_dest_prefix(args, output_prefix):
