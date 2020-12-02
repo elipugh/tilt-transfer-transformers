@@ -91,7 +91,7 @@ def main(args):
         d = fDictionary()
         d.symbols = corpus.dictionary.idx2word
         d.count = [0 for _ in range(corpus.dictionary.total)]
-        for k,v in corpus.dictionary.counters.items():
+        for k,v in corpus.dictionary.counter.items():
             d.count[k] = v
         d.indices = corpus.dictionary.word2idx
         d.finalize()
