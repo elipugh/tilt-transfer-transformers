@@ -22,6 +22,7 @@ from fairseq.data import indexed_dataset
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.normpath(os.path.join(currentdir, os.pardir))
+parentdir = os.path.normpath(os.path.join(parentdir, os.pardir))
 sys.path.insert(0, parentdir)
 from corpora.data import *
 import torch
@@ -66,7 +67,7 @@ def main(args):
         return dest_path("dict", lang) + ".txt"
 
     def build_dictionary(filenames, src=False, tgt=False):
-        c = torch.load("/content/fairseq/data-bin/music/corpus-music")
+        c = torch.load("data-bin/music/corpus-music")
         print(c.dictionary.idx2word[:5])
         assert src ^ tgt
         t =  task.build_dictionary(
