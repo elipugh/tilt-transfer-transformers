@@ -94,29 +94,38 @@ def main(args):
             n_seq_tok[0] += worker_result["nseq"]
             n_seq_tok[1] += worker_result["ntok"]
 
-        ds = indexed_dataset.make_builder(
+        ds = indexed_dataset.IndexedDatasetBuilder(
             dataset_dest_file(args, output_prefix, "bin"),
-            impl="mmap",
-            vocab_size=len(vocab),
         )
 
-        merge_result(
-            Binarizer.binarize(
-                input_file, vocab, lambda t: ds.add_item(t)
-            )
-        )
+        #####################
 
-        ds.finalize(dataset_dest_file(args, output_prefix, "idx"))
+        def consumer(tensor):
+            ds.add_item(tensor)
 
-        logger.info(
-            "{}: {} sents, {} tokens, {:.3}% replaced by {}".format(
-                input_file,
-                n_seq_tok[0],
-                n_seq_tok[1],
-                100 * sum(replaced.values()) / n_seq_tok[1],
-                vocab.unk_word,
-            )
-        )
+        consumer(data)
+
+        ds.finalize(dataset_dest_file(args, output_prefix, "",'idx'))
+
+        #####################
+
+        # merge_result(
+        #     Binarizer.binarize(
+        #         input_file, vocab, lambda t: ds.add_item(t)
+        #     )
+        # )
+
+        # ds.finalize(dataset_dest_file(args, output_prefix, "idx"))
+
+        # logger.info(
+        #     "{}: {} sents, {} tokens, {:.3}% replaced by {}".format(
+        #         input_file,
+        #         n_seq_tok[0],
+        #         n_seq_tok[1],
+        #         100 * sum(replaced.values()) / n_seq_tok[1],
+        #         vocab.unk_word,
+        #     )
+        # )
 
     def make_all(vocab, corpus):
         make_binary_dataset(vocab, corpus.train, "train")
