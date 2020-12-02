@@ -96,13 +96,13 @@ def main(args):
 
         ds = indexed_dataset.make_builder(
             dataset_dest_file(args, output_prefix, "bin"),
-            impl=args.dataset_impl,
+            impl="mmap",
             vocab_size=len(vocab),
         )
 
         merge_result(
             Binarizer.binarize(
-                input_file, vocab, lambda t: ds.add_item(t), offset=0, end=offsets[1]
+                input_file, vocab, lambda t: ds.add_item(t)
             )
         )
 
