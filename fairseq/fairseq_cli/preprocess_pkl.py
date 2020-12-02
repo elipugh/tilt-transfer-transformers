@@ -24,7 +24,9 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.normpath(os.path.join(currentdir, os.pardir))
 parentdir = os.path.normpath(os.path.join(parentdir, os.pardir))
 sys.path.insert(0, parentdir)
-from corpora.data import *
+from corpora.data import Corpus
+from corpora.data import Dictionary as cDictionary
+from fairseq.data import Dictionary as fDictionary
 import torch
 
 
@@ -34,22 +36,39 @@ logging.basicConfig(
     level=os.environ.get("LOGLEVEL", "INFO").upper(),
     stream=sys.stdout,
 )
-logger = logging.getLogger("fairseq_cli.preprocess")
+logger = logging.getLogger("fairseq_cli.preprocess_pkl")
+
+
+def get_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--corpus", default=None, metavar="FP", help="corpus"
+    )
+    parser.add_argument(
+        "--dir", default=None, metavar="FP", help="dir"
+    )
+    parser.add_argument(
+        "--workers",
+        metavar="N",
+        default=20,
+        type=int,
+        help="workers",
+    )
 
 
 def main(args):
     utils.import_user_module(args)
 
-    os.makedirs(args.destdir, exist_ok=True)
+    os.makedirs(args.dir, exist_ok=True)
 
     logger.addHandler(
         logging.FileHandler(
-            filename=os.path.join(args.destdir, "preprocess.log"),
+            filename=os.path.join(args.destdir, "preprocess_pkl.log"),
         )
     )
     logger.info(args)
 
-    task = tasks.get_task(args.task)
+    task = tasks.get_task("language_modeling")
 
     def train_path(lang):
         return "{}{}".format(args.trainpref, ("." + lang) if lang else "")
@@ -61,73 +80,22 @@ def main(args):
         return fname
 
     def dest_path(prefix, lang):
-        return os.path.join(args.destdir, file_name(prefix, lang))
+        return os.path.join(args.dir, file_name(prefix, lang))
 
     def dict_path(lang):
         return dest_path("dict", lang) + ".txt"
 
-    def build_dictionary(filenames, src=False, tgt=False):
-        c = torch.load("data-bin/music/corpus-music")
-        print(c.dictionary.idx2word[:5])
-        assert src ^ tgt
-        t =  task.build_dictionary(
-            filenames,
-            workers=args.workers,
-            threshold=args.thresholdsrc if src else args.thresholdtgt,
-            nwords=args.nwordssrc if src else args.nwordstgt,
-            padding_factor=args.padding_factor,
-        )
-        print(t.count[:5])
+    def build_dictionary(corpus):
+
+        print(corpus.dictionary.idx2word[:5])
+
+        d = fDictionary()
+
         return t
 
-    target = not args.only_source
-
-    if not args.srcdict and os.path.exists(dict_path(args.source_lang)):
-        raise FileExistsError(dict_path(args.source_lang))
-    if target and not args.tgtdict and os.path.exists(dict_path(args.target_lang)):
-        raise FileExistsError(dict_path(args.target_lang))
-
-    if args.joined_dictionary:
-        assert (
-            not args.srcdict or not args.tgtdict
-        ), "cannot use both --srcdict and --tgtdict with --joined-dictionary"
-
-        if args.srcdict:
-            src_dict = task.load_dictionary(args.srcdict)
-        elif args.tgtdict:
-            src_dict = task.load_dictionary(args.tgtdict)
-        else:
-            assert (
-                args.trainpref
-            ), "--trainpref must be set if --srcdict is not specified"
-            src_dict = build_dictionary(
-                {train_path(lang) for lang in [args.source_lang, args.target_lang]},
-                src=True,
-            )
-        tgt_dict = src_dict
-    else:
-        if args.srcdict:
-            src_dict = task.load_dictionary(args.srcdict)
-        else:
-            assert (
-                args.trainpref
-            ), "--trainpref must be set if --srcdict is not specified"
-            src_dict = build_dictionary([train_path(args.source_lang)], src=True)
-
-        if target:
-            if args.tgtdict:
-                tgt_dict = task.load_dictionary(args.tgtdict)
-            else:
-                assert (
-                    args.trainpref
-                ), "--trainpref must be set if --tgtdict is not specified"
-                tgt_dict = build_dictionary([train_path(args.target_lang)], tgt=True)
-        else:
-            tgt_dict = None
-
-    src_dict.save(dict_path(args.source_lang))
-    if target and tgt_dict is not None:
-        tgt_dict.save(dict_path(args.target_lang))
+    corpus = torch.load(args.corpus)
+    src_dict = build_dictionary(corpus)
+    src_dict.save("dict.txt")
 
     def make_binary_dataset(vocab, input_prefix, output_prefix, lang, num_workers):
         logger.info("[{}] Dictionary: {} types".format(lang, len(vocab)))
@@ -400,11 +368,7 @@ def get_offsets(input_file, num_workers):
     return Binarizer.find_offsets(input_file, num_workers)
 
 
-def cli_main():
-    parser = options.get_preprocessing_parser()
+if __name__ == "__main__":
+    parser = get_parser()
     args = parser.parse_args()
     main(args)
-
-
-if __name__ == "__main__":
-    cli_main()
