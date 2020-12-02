@@ -15,6 +15,7 @@ import inspect
 from collections import Counter
 from itertools import zip_longest
 from multiprocessing import Pool
+import argparse
 
 from fairseq import options, tasks, utils
 from fairseq.binarizer import Binarizer
