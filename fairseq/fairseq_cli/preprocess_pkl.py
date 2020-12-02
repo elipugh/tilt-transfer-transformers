@@ -99,7 +99,7 @@ def main(args):
 
     corpus = torch.load(args.corpus)
     src_dict = build_dictionary(corpus)
-    src_dict.save(args.dir + "dict.txt")
+    src_dict.save(os.path.join(args.dir, "dict.txt"))
 
     def make_binary_dataset(vocab, input_prefix, output_prefix, lang, num_workers):
         logger.info("[{}] Dictionary: {} types".format(lang, len(vocab)))
