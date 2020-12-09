@@ -100,7 +100,8 @@ def main(args):
         def consumer(tensor):
             ds.add_item(tensor)
 
-        consumer(data)
+        for i in range(data.size()[0]//512):
+            consumer(data[i*512:(i+1)*512])
 
         ds.finalize(dataset_dest_file(args, output_prefix, 'idx'))
 
