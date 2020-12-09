@@ -91,6 +91,7 @@ def main(args):
 
         ds = indexed_dataset.IndexedDatasetBuilder(
             dataset_dest_file(args, output_prefix, "bin"),
+            impl="mmap"
         )
 
         #####################
