@@ -89,9 +89,10 @@ def main(args):
         replaced = Counter()
 
 
-        ds = indexed_dataset.IndexedDatasetBuilder(
+        ds = indexed_dataset.make_builder(
             dataset_dest_file(args, output_prefix, "bin"),
-            impl="mmap"
+            impl="mmap",
+            vocab_size=len(vocab),
         )
 
         #####################
