@@ -276,6 +276,7 @@ class TqdmProgressBar(BaseProgressBar):
             self.prefix,
             leave=False,
             disable=(logger.getEffectiveLevel() > logging.INFO),
+            position=0, leave=True
         )
 
     def __iter__(self):
