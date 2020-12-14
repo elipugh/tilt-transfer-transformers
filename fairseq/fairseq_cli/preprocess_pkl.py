@@ -47,6 +47,9 @@ def get_parser():
     parser.add_argument(
         "--dir", default=None, metavar="FP", help="dir"
     )
+    parser.add_argument(
+        "--chunk_size", default=None, metavar="N", help="chunk size"
+    )
     return parser
 
 
@@ -84,6 +87,8 @@ def main(args):
     src_dict = build_dictionary(corpus)
     src_dict.save(os.path.join(args.dir, "dict.txt"))
 
+    cs = args.chunk_size
+
     def make_binary_dataset(vocab, data, output_prefix):
         logger.info("Dictionary: {} types".format(len(vocab)))
         replaced = Counter()
@@ -100,8 +105,8 @@ def main(args):
         def consumer(tensor):
             ds.add_item(tensor)
 
-        for i in range(data.size()[0]//512):
-            consumer(data[i*512:(i+1)*512])
+        for i in range(data.size()[0]//cs):
+            consumer(data[i*cs:(i+1)*cs])
 
         ds.finalize(dataset_dest_file(args, output_prefix, 'idx'))
 
