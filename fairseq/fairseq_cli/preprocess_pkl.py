@@ -48,7 +48,7 @@ def get_parser():
         "--dir", default=None, metavar="FP", help="dir"
     )
     parser.add_argument(
-        "--chunk_size", default=None, metavar="N", help="chunk size"
+        "--chunk-size", default=None, metavar="N", help="chunk size"
     )
     return parser
 
