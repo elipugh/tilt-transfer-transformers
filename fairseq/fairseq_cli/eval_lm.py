@@ -281,10 +281,12 @@ def cli_main():
     args = options.parse_args_and_arch(parser)
 
     # only override args that are explicitly given on the command line
-    override_parser = options.get_validation_parser()
+    override_parser = options.get_eval_lm_parser()
     override_args = options.parse_args_and_arch(override_parser, suppress_defaults=True)
 
-    distributed_utils.call_main(args, main, override_args=override_args)
+    cfg = convert_namespace_to_omegaconf(args)
+
+    distributed_utils.call_main(cfg, main, override_args=override_args)
 
 
 if __name__ == "__main__":
