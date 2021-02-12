@@ -503,6 +503,12 @@ class TransformerEncoder(FairseqEncoder):
         return min(self.max_source_positions, self.embed_positions.max_positions)
 
     def upgrade_state_dict_named(self, state_dict, name):
+        # Eli
+        if True:
+            # Keep the current weights for the encoder embedding table
+            for k in state_dict.keys():
+                if 'encoder.embed_tokens' in k:
+                    state_dict[k] = self.embed_tokens.weight
         """Upgrade a (possibly old) state dict for new versions of fairseq."""
         if isinstance(self.embed_positions, SinusoidalPositionalEmbedding):
             weights_key = "{}.embed_positions.weights".format(name)
@@ -512,11 +518,13 @@ class TransformerEncoder(FairseqEncoder):
             state_dict[
                 "{}.embed_positions._float_tensor".format(name)
             ] = torch.FloatTensor(1)
-        for i in range(self.num_layers):
-            # update layer norms
-            self.layers[i].upgrade_state_dict_named(
-                state_dict, "{}.layers.{}".format(name, i)
-            )
+        # Eli
+        if False:
+            for i in range(self.num_layers):
+                # update layer norms
+                self.layers[i].upgrade_state_dict_named(
+                    state_dict, "{}.layers.{}".format(name, i)
+                )
 
         version_key = "{}.version".format(name)
         if utils.item(state_dict.get(version_key, torch.Tensor([1]))[0]) < 2:
@@ -856,6 +864,12 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         return self._future_mask[:dim, :dim]
 
     def upgrade_state_dict_named(self, state_dict, name):
+        # Eli
+        if True:
+            for k in state_dict.keys():
+                if 'decoder.embed_tokens' in k:
+                    state_dict[k] = self.embed_tokens.weight
+
         """Upgrade a (possibly old) state dict for new versions of fairseq."""
         if isinstance(self.embed_positions, SinusoidalPositionalEmbedding):
             weights_key = "{}.embed_positions.weights".format(name)
@@ -865,7 +879,9 @@ class TransformerDecoder(FairseqIncrementalDecoder):
                 "{}.embed_positions._float_tensor".format(name)
             ] = torch.FloatTensor(1)
 
-        if f"{name}.output_projection.weight" not in state_dict:
+        # Eli
+        # if f"{name}.output_projection.weight" not in state_dict:
+        if True:
             if self.share_input_output_embed:
                 embed_out_key = f"{name}.embed_tokens.weight"
             else:
