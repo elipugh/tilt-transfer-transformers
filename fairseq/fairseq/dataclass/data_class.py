@@ -413,7 +413,7 @@ class OptimizationConfig(FairseqDataclass):
         },
     )
     freeze: bool = field(
-        default=False:
+        default=False,
         metadata={
             "help": "whether to freeze all layers except embedding layer."
         }
