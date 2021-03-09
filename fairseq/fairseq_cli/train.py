@@ -80,7 +80,7 @@ def main(cfg: DictConfig) -> None:
         "criterion: {} ({})".format(cfg.criterion._name, criterion.__class__.__name__)
     )
     if cfg.optimization.freeze:
-        for p in model.parameters:
+        for p in model.parameters():
             if "layer" in p:
                 p.requires_grad = False
             if "output" in p:
