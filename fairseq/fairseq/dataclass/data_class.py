@@ -412,6 +412,12 @@ class OptimizationConfig(FairseqDataclass):
             "help": "specify global optimizer for syncing models on different GPUs/shards"
         },
     )
+    freeze: bool = field(
+        default=False:
+        metadata={
+            "help": "whether to freeze all layers except embedding layer."
+        }
+    )
 
 
 @dataclass
