@@ -80,12 +80,12 @@ def main(cfg: DictConfig) -> None:
         "criterion: {} ({})".format(cfg.criterion._name, criterion.__class__.__name__)
     )
     if cfg.optimization.freeze:
-        for p in model.parameters():
-            if "layer" in p:
+        for name, p in model.named_parameters():
+            if "layer" in name:
                 p.requires_grad = False
-            if "output" in p:
+            if "output" in name:
                 p.requires_grad = False
-            print(p, "\nTrained?:", p.requires_grad)
+            print(name, "\nTrained?:", p.requires_grad)
     logger.info("num. model params: {} (num. trained: {})".format(
         sum(p.numel() for p in model.parameters()),
         sum(p.numel() for p in model.parameters() if p.requires_grad),
