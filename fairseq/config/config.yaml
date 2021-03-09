@@ -69,6 +69,7 @@ optimization:
     lr: [ 0.25 ]
     min_lr: -1.0
     use_bmuf: false
+    freeze: false
 checkpoint:
     save_dir: "checkpoints"
     restore_file: "checkpoint_last.pt"
