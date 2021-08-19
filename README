@@ -1,5 +1,7 @@
-Work in progress ... this is intended to extend:
+Retired project this was intended to extend:
 Papadimitriou and Jurafsky 2020, Learning Music Helps You Read: Using transfer to study linguistic structure in language models https://arxiv.org/abs/2004.14601
+
+Check out https://arxiv.org/abs/2103.05247 ... goal was something similar to this, but with language transfer instead of task transfer.
 
 pretrain.py trains a model on a language, assuming you have already made the corpus object wth corpora/make_corpus_object.py and have it in corpora/pickled_files. 
 
